@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{webname}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .container { width: 100%; max-width: 430px; padding: 20px; }
+        .auth-card {
+            background: rgba(30, 30, 50, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.6s ease-out;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .logo { text-align: center; margin-bottom: 25px; }
+        .logo h1 { color: #00d4ff; font-size: 28px; text-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; color: #a0a0c0; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+        input {
+            width: 100%; padding: 12px 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px; color: #fff; font-size: 14px; transition: all 0.3s ease; outline: none;
+        }
+        input:focus { background: rgba(255, 255, 255, 0.1); border-color: #00d4ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
+        input::placeholder { color: #707090; }
+        .remember-forgot { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 13px; }
+        .remember-forgot a { color: #00d4ff; text-decoration: none; }
+        .remember-forgot a:hover { color: #00f0ff; }
+        .checkbox { display: flex; align-items: center; gap: 6px; color: #a0a0c0; }
+        .btn-auth {
+            width: 100%; padding: 12px; background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%); color: #fff; border: none;
+            border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        }
+        .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4); }
+        .toggle-link { text-align: center; margin-top: 18px; color: #a0a0c0; font-size: 14px; }
+        .toggle-link button {
+            background: none; border: none; color: #00d4ff; cursor: pointer; font-weight: 600; font-size: 14px; padding: 0;
+        }
+        .toggle-link button:hover { color: #00f0ff; text-decoration: underline; }
+        .message { margin-top: 15px; text-align: center; font-size: 14px; min-height: 20px; }
+        .message.success { color: #4ade80; }
+        .message.error { color: #f87171; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="logo">
+                <h1 id="panelTitle">🔐 تسجيل الدخول</h1>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">اسم المستخدم أو البريد الإلكتروني</label>
+                    <input type="text" id="loginUsername" name="username" placeholder="أدخل اسم المستخدم أو البريد الإلكتروني" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">كلمة المرور</label>
+                    <input type="password" id="loginPassword" name="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+
+                
+
+                <button type="submit" class="btn-auth">دخول</button>
+
+                <div class="toggle-link">
+                    ليس لديك حساب؟ <button type="button" onclick="showRegister()">إنشاء حساب جديد</button>
+                </div>
+                <div id="loginMessage" class="message"></div>
+            </form>
+
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label for="registerUsername">اسم المستخدم</label>
+                    <input type="text" id="registerUsername" name="username" placeholder="أدخل اسم المستخدم" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">البريد الإلكتروني</label>
+                    <input type="email" id="registerEmail" name="email" placeholder="أدخل البريد الإلكتروني" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">كلمة المرور</label>
+                    <input type="password" id="registerPassword" name="password" placeholder="أدخل كلمة المرور" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="أعد إدخال كلمة المرور" required>
+                </div>
+
+                <button type="submit" class="btn-auth">إنشاء الحساب</button>
+
+                <div class="toggle-link">
+                    لديك حساب بالفعل؟ <button type="button" onclick="showLogin()">تسجيل الدخول</button>
+                </div>
+                <div id="registerMessage" class="message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const panelTitle = document.getElementById('panelTitle');
+        const loginMessage = document.getElementById('loginMessage');
+        const registerMessage = document.getElementById('registerMessage');
+
+        function showRegister() {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            panelTitle.textContent = '📝 إنشاء حساب جديد';
+        }
+
+        function showLogin() {
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            panelTitle.textContent = '🔐 تسجيل الدخول';
+        }
+
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const payload = {
+                username: loginForm.username.value.trim(),
+                password: loginForm.password.value
+            };
+
+            try {
+                const response = await fetch('/accounts/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                loginMessage.textContent = data.message || 'تمت العملية';
+                loginMessage.className = `message ${data.success ? 'success' : 'error'}`;
+
+                if (data.success) {
+                    setTimeout(() => window.location.href = '/trade', 800); // مكان توجيه المستخدم بعد تسجيل الدخول بنجاح
+                }
+            } catch (error) {
+                loginMessage.textContent = 'حدث خطأ أثناء تسجيل الدخول';
+                loginMessage.className = 'message error';
+            }
+        });
+
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const payload = {
+                username: registerForm.username.value.trim(),
+                email: registerForm.email.value.trim(),
+                password: registerForm.password.value,
+                confirmPassword: registerForm.confirmPassword.value
+            };
+
+            try {
+                const response = await fetch('/accounts/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                registerMessage.textContent = data.message || 'تمت العملية';
+                registerMessage.className = `message ${data.success ? 'success' : 'error'}`;
+
+                showLogin(); // العودة إلى نموذج تسجيل الدخول بعد محاولة التسجيل
+            } catch (error) {
+                registerMessage.textContent = 'حدث خطأ أثناء إنشاء الحساب';
+                registerMessage.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>

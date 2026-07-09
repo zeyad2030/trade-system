@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Trading</title>
+
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h2>🎮 Roblox Trading</h2>
+
+        <button class="create-btn">
+            + Create Offer
+        </button>
+    </header>
+
+    <div class="search-box">
+        <input
+            type="text"
+            placeholder="Search offers..."
+        >
+    </div>
+
+    <div class="offers">
+
+        <div class="card">
+
+            <img src="https://via.placeholder.com/90" alt="">
+
+            <div class="info">
+
+                <h3>Dominus Infernus</h3>
+
+                <p><b>Seller:</b> Ahmed</p>
+
+                <p><b>Offering:</b> Dominus</p>
+
+                <p><b>Wants:</b> Korblox + 5K Robux</p>
+
+                <button>Contact</button>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <img src="https://via.placeholder.com/90" alt="">
+
+            <div class="info">
+
+                <h3>Valkyrie Helm</h3>
+
+                <p><b>Seller:</b> Zeyad</p>
+
+                <p><b>Offering:</b> Valkyrie</p>
+
+                <p><b>Wants:</b> Limited Face</p>
+
+                <button>Contact</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const search = document.querySelector("input");
+const cards = document.querySelectorAll(".card");
+const offers = [
+    {
+        image: "https://via.placeholder.com/90",
+        title: "Dominus Infernus",
+        seller: "Ahmed",
+        offering: "Dominus",
+        wants: "Korblox + 5K Robux"
+    },
+    {
+        image: "https://via.placeholder.com/90",
+        title: "Valkyrie Helm",
+        seller: "Zeyad",
+        offering: "Valkyrie",
+        wants: "Limited Face"
+    },
+    {
+        image: "https://via.placeholder.com/90",
+        title: "Blue Sparkle",
+        seller: "Ali",
+        offering: "Blue Sparkle",
+        wants: "50K Robux"
+    }
+];
+
+search.addEventListener("keyup", () => {
+
+    const value = search.value.toLowerCase();
+
+    cards.forEach(card => {
+
+        card.style.display =
+            card.innerText.toLowerCase().includes(value)
+            ? "flex"
+            : "none";
+
+    });
+
+});
+const offersContainer = document.querySelector(".offers");
+
+function renderOffers(list) {
+
+    offersContainer.innerHTML = "";
+
+    list.forEach(item => {
+
+        offersContainer.innerHTML += `
+            <div class="card">
+
+                <img src="${item.image}" alt="">
+
+                <div class="info">
+
+                    <h3>${item.title}</h3>
+
+                    <p><b>Seller:</b> ${item.seller}</p>
+
+                    <p><b>Offering:</b> ${item.offering}</p>
+
+                    <p><b>Wants:</b> ${item.wants}</p>
+
+                    <button>Contact</button>
+
+                </div>
+
+            </div>
+        `;
+
+    });
+
+}
+
+renderOffers(offers);
+</script>
+
+</body>
+</html>
