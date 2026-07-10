@@ -40,6 +40,9 @@ app.get("/trade", (req, res) => {
     }
     res.sendFile(path.join(__dirname, 'web', 'main.html'));
 });
+app.get("/about", (req, res) => {
+    res.sendFile(path.join(__dirname, 'web', 'about.html'));
+});
 
 app.get('/', (req, res) => {
     console.log(req.session.user);

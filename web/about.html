@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>زياد | مطور ويب</title>
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --nav-bg: rgba(20, 20, 20, 0.95);
+            --card-bg: #1a1a1a;
+            --accent: #bb86fc;
+            --text: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+        /* إخفاء السكرول */
+        ::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        nav {
+            height: 70px;
+            background: var(--nav-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav a { color: var(--text); text-decoration: none; font-weight: bold; transition: 0.3s; }
+        nav a:hover { color: var(--accent); }
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* جعل قسم الرئيسية في منتصف الصفحة */
+        #home { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 70vh; 
+        }
+
+        .typing { font-size: 3.5rem; font-weight: bold; color: var(--accent); }
+
+        section { width: 100%; max-width: 800px; margin-bottom: 100px; }
+
+        .project-grid { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .project-card { 
+            background: var(--card-bg); padding: 25px; border-radius: 15px; 
+            transition: 0.3s; border: 1px solid #333;
+        }
+        .project-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+
+        footer { 
+            height: 60px; background: #000; display: flex; 
+            justify-content: center; align-items: center; 
+            border-top: 1px solid #222; color: #757575;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#home">الرئيسية</a>
+        <a href="#projects">مشاريعي</a>
+        <a href="#contact">تواصل معي</a>
+    </nav>
+
+    <main>
+        <section id="home">
+            <div class="typing" id="typing-text"></div>
+        </section>
+
+        <section id="projects">
+            <h2>مشاريعي</h2>
+            <div class="project-grid" id="projects-container"></div>
+        </section>
+
+        <section id="contact">
+            <h2>تواصل معي</h2>
+            <p>سعيد بتلقي استفساراتكم أو العمل على مشاريع جديدة.</p>
+        </section>
+    </main>
+
+    <footer>جميع الحقوق محفوظة © 2026 زياد</footer>
+
+    <script>
+        const textElement = document.getElementById('typing-text');
+        const phrases = ["انا مبرمج مواقع", "انا زياد"];
+        let i = 0, j = 0, isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[i % phrases.length];
+            textElement.textContent = isDeleting ? currentPhrase.substring(0, j--) : currentPhrase.substring(0, j++);
+            if (!isDeleting && j === currentPhrase.length + 1) isDeleting = true;
+            else if (isDeleting && j === 0) isDeleting = false, i++;
+            setTimeout(type, isDeleting ? 100 : 200);
+        }
+        type();
+
+        const projects = [
+            { title: "Online Store", desc: "متجر إلكتروني كامل مع نظام اشعارات وتواصل ." },
+            { title: "Discord Bot API", desc: "نظام ربط متكامل للتحكم بالبوت عبر الويب." },
+            { title: "Prays Reminder", desc: "موقع لتسجيل الصلاوات وتذكير الوقت." },
+            {title:"Upload Files Website",desc:"موقع رفع ملفات مع روابط مباشرة للتحميل."}
+            ,{title:"Courses Website",desc:"موقع لعرض الدورات التعليمية مع نظام تسجيل."}
+            ,{title:"Company System",desc:"نظام إدارة شركة مع لوحة تحكم كاملة ولاكن مش كامل كليا .  "}
+        ];
+
+        const container = document.getElementById('projects-container');
+        projects.forEach(p => {
+            container.innerHTML += `
+                <div class="project-card">
+                    <h3>${p.title}</h3>
+                    <p style="margin-top:10px; color:#aaa;">${p.desc}</p>
+                </div>`;
+        });
+    </script>
+</body>
+</html>
