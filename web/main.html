@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,10 +12,10 @@
 <div class="container">
 
     <header>
-        <h2>🎮 Roblox Trading</h2>
+        <h2>🎮 عرض تجاره </h2>
 
-        <button class="create-btn">
-            + Create Offer
+        <button class="create-btn" id="create-btn">
+            + انشاء عرض
         </button>
     </header>
 
@@ -28,89 +28,89 @@
 
     <div class="offers">
 
-        <div class="card">
+        
 
-            <img src="https://via.placeholder.com/90" alt="">
+    </div>
+     
 
-            <div class="info">
+</div>
 
-                <h3>Dominus Infernus</h3>
+</div>
+<div id="offerModal" class="modal">
 
-                <p><b>Seller:</b> Ahmed</p>
+    <div class="modal-content">
 
-                <p><b>Offering:</b> Dominus</p>
+        <h2>انشاء عرض</h2>
 
-                <p><b>Wants:</b> Korblox + 5K Robux</p>
+        <input type="text" id="image" placeholder="رابط الصورة">
 
-                <button>Contact</button>
+        
 
-            </div>
+        
 
-        </div>
+        <input type="text" id="offering" placeholder="المنتج المعروض">
 
-        <div class="card">
+        <input type="text" id="wants" placeholder="المنتجات المرغوبة">
 
-            <img src="https://via.placeholder.com/90" alt="">
-
-            <div class="info">
-
-                <h3>Valkyrie Helm</h3>
-
-                <p><b>Seller:</b> Zeyad</p>
-
-                <p><b>Offering:</b> Valkyrie</p>
-
-                <p><b>Wants:</b> Limited Face</p>
-
-                <button>Contact</button>
-
-            </div>
-
+        <div class="buttons">
+            <button id="saveOffer">Create</button>
+            <button id="closeModal">Cancel</button>
         </div>
 
     </div>
 
 </div>
-
 <script>
     const search = document.querySelector("input");
 const cards = document.querySelectorAll(".card");
-const offers = [
-    {
-        image: "https://via.placeholder.com/90",
-        title: "Dominus Infernus",
-        seller: "Ahmed",
-        offering: "Dominus",
-        wants: "Korblox + 5K Robux"
-    },
-    {
-        image: "https://via.placeholder.com/90",
-        title: "Valkyrie Helm",
-        seller: "Zeyad",
-        offering: "Valkyrie",
-        wants: "Limited Face"
-    },
-    {
-        image: "https://via.placeholder.com/90",
-        title: "Blue Sparkle",
-        seller: "Ali",
-        offering: "Blue Sparkle",
-        wants: "50K Robux"
+const createBtn = document.getElementById("create-btn");
+const modal = document.getElementById("offerModal");
+const closeModal = document.getElementById("closeModal");
+const saveOffer = document.getElementById("saveOffer");
+var offers = [];
+modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+        modal.classList.remove("show");
     }
-];
+});
 
-search.addEventListener("keyup", () => {
+createBtn.addEventListener("click", () => {
+    modal.classList.add("show");
+});
+closeModal.addEventListener("click", () => {
+    modal.classList.remove("show");
+});
 
-    const value = search.value.toLowerCase();
+saveOffer.addEventListener("click", () => {
 
-    cards.forEach(card => {
+    createoffer(
+        {
+            image: document.getElementById("image").value,
+            
+            offering: document.getElementById("offering").value,
+            wants: document.getElementById("wants").value
+        }
+    );
 
-        card.style.display =
-            card.innerText.toLowerCase().includes(value)
-            ? "flex"
-            : "none";
+    modal.classList.remove("show");
+
+});
+search.addEventListener("input", () => {
+
+    const value = search.value.trim().toLowerCase();
+
+    const filtered = offers.filter(item => {
+
+        return (
+            item.title.toLowerCase().includes(value) ||
+            item.seller.toLowerCase().includes(value) ||
+            item.offering.toLowerCase().includes(value) ||
+            item.wants.toLowerCase().includes(value)
+        );
 
     });
+
+    renderOffers(filtered);
 
 });
 const offersContainer = document.querySelector(".offers");
@@ -121,33 +121,111 @@ function renderOffers(list) {
 
     list.forEach(item => {
 
-        offersContainer.innerHTML += `
-            <div class="card">
+        const card = document.createElement("div");
+        card.className = "card";
 
-                <img src="${item.image}" alt="">
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = "";
 
-                <div class="info">
+        const info = document.createElement("div");
+        info.className = "info";
 
-                    <h3>${item.title}</h3>
+        const title = document.createElement("h3");
+        title.textContent = item.title;
 
-                    <p><b>Seller:</b> ${item.seller}</p>
+        const seller = document.createElement("p");
+        seller.innerHTML = "<b>البائع:</b> ";
+        seller.appendChild(document.createTextNode(item.seller));
 
-                    <p><b>Offering:</b> ${item.offering}</p>
+        const offering = document.createElement("p");
+        offering.innerHTML = "<b>المنتج المعروض:</b> ";
+        offering.appendChild(document.createTextNode(item.offering));
 
-                    <p><b>Wants:</b> ${item.wants}</p>
+        const wants = document.createElement("p");
+        wants.innerHTML = "<b>المنتجات المرغوبة:</b> ";
+        wants.appendChild(document.createTextNode(item.wants));
 
-                    <button>Contact</button>
+        const button = document.createElement("button");
+        button.textContent = "تواصل";
 
-                </div>
+        info.appendChild(title);
+        info.appendChild(seller);
+        info.appendChild(offering);
+        info.appendChild(wants);
+        info.appendChild(button);
 
-            </div>
-        `;
+        card.appendChild(img);
+        card.appendChild(info);
+
+        offersContainer.appendChild(card);
+        if (item.seller === localStorage.getItem("username")) {
+            button.textContent = "حذف"
+            button.style.backgroundColor = "red"
+            button.addEventListener("click", () => {
+                fetch(`/system/delete-offer`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ offerId: item._id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert("تم حذف العرض بنجاح");
+                    getoffers(); // Refresh the offers list after deleting an offer
+                })
+                .catch(error => {
+                    console.error("Error deleting offer:", error);
+                });
+            });
+        } 
+        else {
+            button.addEventListener("click", () => {
+                alert(`تواصل مع ${item.seller} عبر البريد الإلكتروني: `);
+            });
+        }
 
     });
 
 }
+getoffers()
+function getoffers() {
+    fetch("http://localhost:3000/system/offers")
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fetched offers:", data);
+            offers = data.offers;
+            localStorage.setItem("username", data.user);
+            renderOffers(offers);
+        })
+        .catch(error => {
+            console.error("Error fetching offers:", error);
+        });
+}
+function createoffer(data) {
+    fetch("http://localhost:3000/system/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+           image: data.image,
+            title: "عرض جديد",
+            offering: data.offering,
+            wants: data.wants
+        })
+    })
+    .then(response => response.json())
+        .then(data => {
+            console.log("Offer created:", data);
+            getoffers(); // Refresh the offers list after creating a new offer
+        })
+        .catch(error => {
+            console.error("Error creating offer:", error);
+        });
 
-renderOffers(offers);
+}
 </script>
 
 </body>

@@ -30,13 +30,6 @@ function authenticate(role = null) {
 }
 
 
-router.get('/', authenticate("user"),(req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ error: 'Not Logged In' });
-    }
-
-    res.json(req.session.user);
-});
 
 router.post('/logout', (req, res) => {
     req.session.destroy((err) => {

@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const accountsRouter = require('./routes/account');
-
+const systemrouter = require('./routes/system');
 const session = require('express-session');
 
 const { connectDB } = require("./db");
@@ -21,36 +21,33 @@ app.use(session({
 }));
 connectDB()
 
-app.use(express.static(path.join(__dirname, 'web'))); // Serve static files from the "web" directory
+ // Serve static files from the "web" directory
 // Middleware to parse JSON requests
-
+app.use(express.static(path.join(__dirname, 'web')));
     
 app.use('/accounts', accountsRouter);
 
-app.get('/login', (req, res) => {
+app.get('/', (req, res) => {
+    
     if (req.session.user) {
         return res.redirect('/trade');
     }
-    res.sendFile(path.join(__dirname, 'web', 'index.html'));
+    res.sendFile(path.join(__dirname, 'web', 'login.html'));
 
 });
 app.get("/trade", (req, res) => {
+    
     if (!req.session.user) {
-        return res.redirect('/login');
+        return res.redirect('/');
     }
     res.sendFile(path.join(__dirname, 'web', 'main.html'));
 });
 app.get("/about", (req, res) => {
     res.sendFile(path.join(__dirname, 'web', 'about.html'));
 });
+app.use('/system', systemrouter);
 
-app.get('/', (req, res) => {
-    console.log(req.session.user);
-    if (!req.session.user) {
-        return res.redirect('/login');
-    }
-    res.send("hello " + req.session.user.username);
-})
+
 
 
 const PORT = process.env.PORT || 3000;
