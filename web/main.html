@@ -60,6 +60,55 @@
     </div>
 
 </div>
+<!-- زر الرسائل -->
+<div class="chat-float" id="chatToggle">
+    💬
+</div>
+
+<!-- قائمة المحادثات -->
+<div class="chat-panel" id="chatPanel">
+
+    <div class="chat-header">
+        المحادثات
+    </div>
+
+    <div class="chat-users">
+
+       
+
+        
+
+    </div>
+
+</div>
+
+<!-- نافذة المحادثة -->
+
+<div class="chat-box" id="chatBox">
+
+    <div class="chat-box-header">
+        <span id="chatName">...</span>
+    </div>
+
+    <div class="messages" id="messages">
+
+    </div>
+
+    <div class="chat-input">
+
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="اكتب رسالة..."
+            
+        >
+
+        <button onclick="sendMessage()">➤</button>
+
+    </div>
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
 <script>
     const search = document.querySelector("input");
 const cards = document.querySelectorAll(".card");
@@ -67,7 +116,11 @@ const createBtn = document.getElementById("create-btn");
 const modal = document.getElementById("offerModal");
 const closeModal = document.getElementById("closeModal");
 const saveOffer = document.getElementById("saveOffer");
+const socket = io();
+
+socket.emit("join");
 var offers = [];
+let interval;
 modal.addEventListener("click", (e) => {
     if (e.target === modal) {
         modal.classList.remove("show");
@@ -182,7 +235,7 @@ function renderOffers(list) {
         } 
         else {
             button.addEventListener("click", () => {
-                alert(`تواصل مع ${item.seller} عبر البريد الإلكتروني: `);
+                createChat(item.seller);
             });
         }
 
@@ -226,6 +279,227 @@ function createoffer(data) {
         });
 
 }
+const chatToggle=document.getElementById("chatToggle");
+const chatPanel=document.getElementById("chatPanel");
+const chatBox=document.getElementById("chatBox");
+const input=document.getElementById("messageInput");
+input.addEventListener("keydown", (e) => {
+
+    if (e.key === "Enter") {
+        e.preventDefault(); // يمنع السلوك الافتراضي إذا كان داخل form
+        sendMessage();
+    }
+
+});
+chatToggle.onclick=()=>{
+
+chatPanel.style.display=
+chatPanel.style.display==="flex"
+?"none":"flex";
+chatBox.style.display="none";
+clearInterval(interval);
+};
+
+function openChat(name){
+clearInterval(interval);
+chatBox.style.display="flex";
+getmessages(name);
+document.getElementById("chatName").innerText=name;
+
+
+
+}
+function sendMessage(){
+
+
+
+if(input.value=="") return;
+if (input.value.length>100) {
+    alert("الرسالة طويلة جدا");
+    return;
+}
+if(input.value == "/delete"){ 
+    deletechat();
+    alert("تم حذف المحادثة بنجاح");
+    return;
+}
+const div=document.createElement("div");
+
+div.className="message mine";
+
+div.innerText=input.value;
+
+document.getElementById("messages").appendChild(div);
+
+
+
+
+socket.emit("send-message", {
+    from: "zeyad",
+    to: "ahmed",
+    message: "Hello"
+});
+
+fetch("http://localhost:3000/messages/", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+       text: input.value,
+       to: document.getElementById("chatName").innerText
+
+    })
+
+}
+).then(response => response.json())
+    .then(data => {
+        console.log("Message sent:", data);
+        input.value="";
+        document.getElementById("messages").scrollTop=
+        document.getElementById("messages").scrollHeight;
+    })
+    .catch(error => {
+        console.error("Error sending message:", error);
+    });
+
+}
+
+function getchats() {
+    fetch("http://localhost:3000/messages/chats")
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector(".chat-users").innerHTML = "";
+            console.log("Fetched chats:", data);
+            data.chats.forEach(chat => {
+                if (chat.to !== localStorage.getItem("username")) {
+                    adduser(chat.to);
+                }else {
+                    adduser(chat.from);
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching chats:", error);
+        });
+}
+getchats();
+
+function createChat(name) {
+    
+    fetch(`http://localhost:3000/messages/chatcreate`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            to: name
+        })
+
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fetched messages:", data);
+            if (data.error) {
+                alert(data.error);
+            } else {
+                adduser(name);
+                alert("تم انشاء المحادثة بنجاح");
+            }
+        })
+        .catch(error => {
+           
+            console.error("Error fetching messages:", error);
+        });
+}
+
+
+function receiveMessage(msg) {
+    const div = document.createElement("div");
+    div.className = "message other";
+    div.innerText = msg;
+    document.getElementById("messages").appendChild(div);
+    document.getElementById("messages").scrollTop =
+        document.getElementById("messages").scrollHeight;
+}
+function adduser(name) {
+    const userDiv = document.createElement("div");
+    userDiv.className = "chat-user";
+    userDiv.onclick = () => openChat(name);
+
+    const img = document.createElement("img");
+    img.src = `https://i.pravatar.cc/40?u=${name}`;
+    img.alt = name;
+
+    const span = document.createElement("span");
+    span.textContent = name;
+
+    userDiv.appendChild(img);
+    userDiv.appendChild(span);
+
+    document.querySelector(".chat-users").appendChild(userDiv);
+}
+
+function getmessages(name) {
+    fetch(`http://localhost:3000/messages/getmessages/${name}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(response => response.json())
+
+        .then(data => {
+            console.log("Fetched messages:", data);
+            document.getElementById("messages").innerHTML = "";
+            data.messages.forEach(msg => {
+                const div = document.createElement("div");
+                div.className = msg.from === localStorage.getItem("username") ? "message mine" : "message other";
+                div.innerText = msg.text;
+                document.getElementById("messages").appendChild(div);
+            
+            });
+            document.getElementById("messages").scrollTop =
+                document.getElementById("messages").scrollHeight;
+            
+        })
+        .catch(error => {
+            console.error("Error fetching messages:", error);
+        });
+}
+function deletechat(){
+    fetch(`http://localhost:3000/messages/deletechat/${document.getElementById("chatName").textContent}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Chat deleted:", data);
+            
+            document.getElementById("messages").innerHTML = "";
+            document.getElementById("chatName").innerText = "...";
+            chatBox.style.display = "none";
+            getchats();
+        })
+        .catch(error => {
+            console.error("Error deleting chat:", error);
+        });
+}
+socket.on("receive-message", (message) => {
+
+    getmessages(document.getElementById("chatName").textContent);
+
+});
+socket.on("receive-chat", (from) => {
+    adduser(from);
+});
+socket.on("refresh-chats", () => {
+    getchats();
+});
+// رسالتي
+
 </script>
 
 </body>
