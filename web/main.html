@@ -244,7 +244,7 @@ function renderOffers(list) {
 }
 getoffers()
 function getoffers() {
-    fetch("http://localhost:3000/system/offers")
+    fetch(" /system/offers")
         .then(response => response.json())
         .then(data => {
             console.log("Fetched offers:", data);
@@ -257,7 +257,7 @@ function getoffers() {
         });
 }
 function createoffer(data) {
-    fetch("http://localhost:3000/system/create", {
+    fetch(" /system/create", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -340,7 +340,7 @@ socket.emit("send-message", {
     message: "Hello"
 });
 
-fetch("http://localhost:3000/messages/", {
+fetch("/messages/", {
     method: "POST",
     headers: {
         "Content-Type": "application/json"
@@ -366,7 +366,7 @@ fetch("http://localhost:3000/messages/", {
 }
 
 function getchats() {
-    fetch("http://localhost:3000/messages/chats")
+    fetch("/messages/chats")
         .then(response => response.json())
         .then(data => {
             document.querySelector(".chat-users").innerHTML = "";
@@ -387,7 +387,7 @@ getchats();
 
 function createChat(name) {
     
-    fetch(`http://localhost:3000/messages/chatcreate`,{
+    fetch(`/messages/chatcreate`,{
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -441,7 +441,7 @@ function adduser(name) {
 }
 
 function getmessages(name) {
-    fetch(`http://localhost:3000/messages/getmessages/${name}`, {
+    fetch(`/messages/getmessages/${name}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -468,7 +468,7 @@ function getmessages(name) {
         });
 }
 function deletechat(){
-    fetch(`http://localhost:3000/messages/deletechat/${document.getElementById("chatName").textContent}`, {
+    fetch(`/messages/deletechat/${document.getElementById("chatName").textContent}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json"
